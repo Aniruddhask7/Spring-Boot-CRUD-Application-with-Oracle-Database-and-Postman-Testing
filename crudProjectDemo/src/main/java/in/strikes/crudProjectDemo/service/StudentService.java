@@ -3,6 +3,7 @@ package in.strikes.crudProjectDemo.service;
 import in.strikes.crudProjectDemo.entity.student;
 import in.strikes.crudProjectDemo.repositery.StudentRepositry;
 import org.springframework.stereotype.Service;
+import org.springframework.web.accept.MediaTypeFileExtensionResolver;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,27 +11,31 @@ import java.util.Optional;
 @Service
 public class StudentService {
 
-private StudentRepositry studRepositry;
-public StudentService(StudentRepositry studRepositry){
+    private final MediaTypeFileExtensionResolver mediaTypeFileExtensionResolver;
+    private StudentRepositry studRepositry;
+public StudentService(StudentRepositry studRepositry, MediaTypeFileExtensionResolver mediaTypeFileExtensionResolver){
     this.studRepositry = studRepositry;
+    this.mediaTypeFileExtensionResolver = mediaTypeFileExtensionResolver;
 }
 
 
-//crreate
+//create
     public student createStudent(student studRequest){
 
+    studRequest.setDeleted(false);
         student studRespo =  studRepositry.save(studRequest);
-
         return studRespo;
+
+
 
     }
 
 
     //read
     public student getStudent(Long id){
-
-       Optional<student> studResponse =  studRepositry.findById(id);
-
+//                                         select * from student where id =1 and  deleted = false;
+       Optional<student> studResponse =  studRepositry.findByIdAndDeletedIsFalse(id);
+        //findById(id)
        if(studResponse.isPresent()){
            return studResponse.get();
        }
@@ -41,8 +46,8 @@ public StudentService(StudentRepositry studRepositry){
     //readAll
 
     public List<student> getAllStudent(){
-        List<student> studRespons =  studRepositry.findAll();
-
+        List<student> studRespons =  studRepositry.findByDeletedIsFalse();
+ //findAll()
 
       return studRespons;
         }
@@ -51,11 +56,12 @@ public StudentService(StudentRepositry studRepositry){
         //update
 
     public student updareStudent(Long id   , student stdRequest){
-       Optional<student> existingStudent =  studRepositry.findById(id);
+       Optional<student> existingStudent =  studRepositry.findByIdAndDeletedIsFalse(id);
 
       if(existingStudent.isEmpty()){
           return null;
       }
+
 
 
       student studentToSave = existingStudent.get();
@@ -64,6 +70,7 @@ public StudentService(StudentRepositry studRepositry){
       studentToSave.setAge(stdRequest.getAge());
       studentToSave.setRollNo(stdRequest.getRollNo());
       studentToSave.setSubject(stdRequest.getSubject());
+      studentToSave.setDeleted(false);
 
       return  studRepositry.save(studentToSave);
 
@@ -71,8 +78,8 @@ public StudentService(StudentRepositry studRepositry){
     }
 
 
-
-    public Boolean deleteStudent(Long id){
+     //delete
+    public  Boolean deleteStudent(Long id){
       Boolean studRespo = studRepositry.existsById(id);
 
      if(!studRespo) {
@@ -82,6 +89,34 @@ public StudentService(StudentRepositry studRepositry){
      studRepositry.deleteById(id);
 
         return true;
+
+    }
+
+
+
+    //soft deleted  patch
+    public Boolean deletSoftStudent(Long id){
+        Optional<student> existingStudent =  studRepositry.findByIdAndDeletedIsFalse(id);
+
+
+        if(existingStudent.isEmpty()){
+            return false;
+        }
+
+
+
+        student studentTosave = existingStudent.get();
+
+        studentTosave.setDeleted(true);
+
+        studRepositry.save(studentTosave);
+
+
+        return true;
+
+
+
+
 
     }
 

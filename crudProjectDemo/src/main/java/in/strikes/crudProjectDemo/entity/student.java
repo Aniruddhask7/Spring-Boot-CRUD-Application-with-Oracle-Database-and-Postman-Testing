@@ -2,12 +2,15 @@
 package in.strikes.crudProjectDemo.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
 public class student {
 
     @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
     private String name;
@@ -15,6 +18,7 @@ public class student {
     private String email;
     private int rollNo;
     private String subject;
+    private boolean deleted;
 
     public student() {
     }
@@ -66,4 +70,8 @@ public class student {
     public void setSubject(String subject) {
         this.subject = subject;
     }
+
+    public boolean isDeleted() {return deleted;}
+
+    public void setDeleted(boolean deleted) {this.deleted = deleted;}
 }
