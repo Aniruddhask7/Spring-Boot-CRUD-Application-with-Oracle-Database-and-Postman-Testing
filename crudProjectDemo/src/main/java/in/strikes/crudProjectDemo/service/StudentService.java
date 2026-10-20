@@ -11,16 +11,17 @@ import java.util.Optional;
 @Service
 public class StudentService {
 
-    private final MediaTypeFileExtensionResolver mediaTypeFileExtensionResolver;
     private StudentRepositry studRepositry;
-public StudentService(StudentRepositry studRepositry, MediaTypeFileExtensionResolver mediaTypeFileExtensionResolver){
+public StudentService(StudentRepositry studRepositry ){
     this.studRepositry = studRepositry;
-    this.mediaTypeFileExtensionResolver = mediaTypeFileExtensionResolver;
+
 }
 
 
 //create
     public student createStudent(student studRequest){
+
+
 
     studRequest.setDeleted(false);
         student studRespo =  studRepositry.save(studRequest);
@@ -36,10 +37,17 @@ public StudentService(StudentRepositry studRepositry, MediaTypeFileExtensionReso
 //                                         select * from student where id =1 and  deleted = false;
        Optional<student> studResponse =  studRepositry.findByIdAndDeletedIsFalse(id);
         //findById(id)
+
+
+
+
        if(studResponse.isPresent()){
            return studResponse.get();
        }
        return null;
+
+
+
     }
 
 
@@ -70,6 +78,7 @@ public StudentService(StudentRepositry studRepositry, MediaTypeFileExtensionReso
       studentToSave.setAge(stdRequest.getAge());
       studentToSave.setRollNo(stdRequest.getRollNo());
       studentToSave.setSubject(stdRequest.getSubject());
+      studentToSave.setPhone_number(stdRequest.getPhone_number());
       studentToSave.setDeleted(false);
 
       return  studRepositry.save(studentToSave);

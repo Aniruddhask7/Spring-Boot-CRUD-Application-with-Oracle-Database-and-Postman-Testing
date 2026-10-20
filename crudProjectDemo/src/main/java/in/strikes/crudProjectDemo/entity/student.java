@@ -1,16 +1,23 @@
 
 package in.strikes.crudProjectDemo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class student {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "student_seq"
+    )
+    @SequenceGenerator(
+            name = "student_seq",
+            sequenceName = "STUDENT_SEQ",
+            allocationSize = 1
+    )
+
+//    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
     private String name;
@@ -19,6 +26,19 @@ public class student {
     private int rollNo;
     private String subject;
     private boolean deleted;
+//    private String phone_number;
+
+    @Column(name = "phone_number", length = 15)
+    private String phone_number;
+
+
+    public String getPhone_number() {
+        return phone_number;
+    }
+
+    public void setPhone_number(String phone_number) {
+        this.phone_number = phone_number;
+    }
 
     public student() {
     }

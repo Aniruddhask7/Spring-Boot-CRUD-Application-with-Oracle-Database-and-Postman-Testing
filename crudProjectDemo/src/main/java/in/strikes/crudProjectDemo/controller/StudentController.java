@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/student")
+@CrossOrigin(origins = "http://localhost:3000")
 public class StudentController {
 
 
@@ -64,7 +65,7 @@ public StudentController (StudentService studService){
     }
 
     @PutMapping("/update")
-    public ResponseEntity<student>updateStudent(@RequestParam Long id , @RequestBody  student stdRequest){
+    public ResponseEntity<student>updateStudent(@RequestBody Long id , @RequestBody  student stdRequest){
 
         student studRespo = studService.updareStudent(id ,stdRequest);
 
@@ -104,6 +105,8 @@ public StudentController (StudentService studService){
 
 
     }
+
+
 
 
 }
